@@ -1,3 +1,4 @@
+const learningSessionRoutes = require("./routes/learningSessionRoutes");
 const connectDB = require("./config/db");
 const express = require("express");
 const cors = require("cors");
@@ -10,7 +11,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+app.use("/api", learningSessionRoutes);
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -34,6 +35,16 @@ app.use("/api/analytics", analyticsRoutes);
 // Test route
 app.get("/", (req, res) => {
   res.send("AI Learning Intelligence System Backend Running...");
+});
+
+app.get("/api/health", (req, res) => {
+
+    res.json({
+
+        success: true
+
+    });
+
 });
 
 // Start server

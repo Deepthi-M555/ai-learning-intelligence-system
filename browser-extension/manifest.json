@@ -1,0 +1,72 @@
+{
+  "manifest_version": 3,
+  "name": "AI Learning Intelligence System",
+  "short_name": "AILIS",
+  "version": "1.0.0",
+  "description": "Tracks learning activity across supported platforms and securely sends learning events to the AI Learning Intelligence backend.",
+
+  //"icons": {
+  //  "16": "assets/icon16.png",
+  //  "32": "assets/icon32.png",
+  //  "48": "assets/icon48.png",
+  //  "128": "assets/icon128.png"
+  //},
+
+  "action": {
+    "default_title": "AI Learning Intelligence System",
+    "default_popup": "src/popup/popup.html"
+  },
+
+   "background": {
+    "service_worker": "src/background/background.js",
+    "type": "module"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "idle",
+    "alarms"
+  ],
+
+  "host_permissions": [
+    "https://*.youtube.com/*",
+    "https://chatgpt.com/*",
+    "https://*.leetcode.com/*",
+    "https://*.geeksforgeeks.org/*",
+    "https://*.hackerrank.com/*",
+    "https://developer.mozilla.org/*",
+    "https://*/*",
+    "http://localhost:5000/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://chatgpt.com/*",
+        "https://*.leetcode.com/*",
+        "https://*.geeksforgeeks.org/*",
+        "https://*.hackerrank.com/*",
+        "https://developer.mozilla.org/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/content/contentScript.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
