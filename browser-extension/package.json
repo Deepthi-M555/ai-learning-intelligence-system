@@ -1,0 +1,19 @@
+{
+  "name": "ai-learning-intelligence-browser-extension",
+  "version": "1.0.0",
+  "description": "Browser extension for AI Learning Intelligence System",
+  "private": true,
+  "scripts": {
+    "start": "echo \"Load the extension from the browser-extension folder using Chrome Developer Mode.\""
+  },
+  "keywords": [
+    "chrome-extension",
+    "learning",
+    "education",
+    "browser",
+    "tracking",
+    "ai"
+  ],
+  "author": "AI Learning Intelligence Team",
+  "license": "MIT"
+}

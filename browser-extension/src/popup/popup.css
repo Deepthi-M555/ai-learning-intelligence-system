@@ -1,0 +1,27 @@
+body{
+
+    width:300px;
+
+    font-family:Arial,sans-serif;
+
+    padding:15px;
+
+}
+
+.container{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+button{
+
+    padding:10px;
+
+    cursor:pointer;
+
+}

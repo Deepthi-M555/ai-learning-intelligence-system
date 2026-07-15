@@ -1,0 +1,8 @@
+const MESSAGE_TYPES = Object.freeze({
+    PAGE_CONTENT: "PAGE_CONTENT",
+    SESSION_START: "SESSION_START",
+    SESSION_END: "SESSION_END",
+    PING: "PING"
+});
+
+export default MESSAGE_TYPES;
