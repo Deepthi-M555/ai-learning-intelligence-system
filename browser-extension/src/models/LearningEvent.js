@@ -4,11 +4,13 @@
  * Learning Event Model
  * ============================================
  *
- * Standard data structure shared across
- * the entire browser extension.
+ * Represents one learning session collected
+ * by the Browser Extension.
  *
- * Every learning session should follow
- * this model before being sent to backend.
+ * This object contains only RAW learning data.
+ * AI-generated fields (summary, quiz,
+ * flashcards, etc.) will be created later
+ * by the AI Processing Module.
  */
 
 class LearningEvent {
@@ -17,22 +19,28 @@ class LearningEvent {
 
         this.sessionId = crypto.randomUUID();
 
+        // User (filled after authentication)
+        this.user = null;
+
+        // Platform Information
         this.platform = "";
+        this.sourceType = "";
 
-        this.url = "";
-
+        // Learning Resource
         this.title = "";
-
+        this.url = "";
         this.content = "";
 
+        // Flexible platform-specific information
+        this.metadata = {};
+
+        // Session Information
         this.activeStudyTime = 0;
-
         this.startedAt = "";
-
         this.completedAt = "";
 
+        // Device Information
         this.browser = "Chrome";
-
         this.device = navigator.platform;
 
     }
@@ -43,16 +51,28 @@ class LearningEvent {
     toJSON() {
 
         return {
+
             sessionId: this.sessionId,
+
+            user: this.user,
+
             platform: this.platform,
-            url: this.url,
+            sourceType: this.sourceType,
+
             title: this.title,
+            url: this.url,
             content: this.content,
+
+            metadata: this.metadata,
+
             activeStudyTime: this.activeStudyTime,
+
             startedAt: this.startedAt,
             completedAt: this.completedAt,
+
             browser: this.browser,
             device: this.device
+
         };
 
     }

@@ -1,21 +1,8 @@
-/**
- * ============================================
- * AI Learning Intelligence System
- * Session Manager
- * ============================================
- *
- * Responsibilities:
- * - Maintain one learning session per tab
- * - Build final learning events
- * - Return completed session data
- */
-
 import LearningEvent from "../models/LearningEvent.js";
 
 import {
     getPlatform
 } from "./tabManager.js";
-
 
 const SESSION_STATE = {
     ACTIVE: "ACTIVE",
@@ -40,11 +27,46 @@ function startSession(tabInfo) {
     const session = new LearningEvent();
 
     session.tabId = tabInfo.id;
+
+    // Platform Information
     session.platform = getPlatform(tabInfo.url);
     session.url = tabInfo.url;
     session.title = tabInfo.title;
+
+    // Decide the source type
+    switch (session.platform) {
+
+        case "ChatGPT":
+            session.sourceType = "Conversation";
+            break;
+
+        case "YouTube":
+            session.sourceType = "Video";
+            break;
+
+        case "LeetCode":
+        case "HackerRank":
+            session.sourceType = "Problem";
+            break;
+
+        case "GeeksforGeeks":
+        case "MDN":
+        case "W3Schools":
+            session.sourceType = "Documentation";
+            break;
+
+        default:
+            session.sourceType = "Learning Resource";
+
+    }
+
+    // Empty metadata (filled later by content extractors)
+    session.metadata = {};
+
     session.startedAt = new Date().toISOString();
+
     session.state = SESSION_STATE.ACTIVE;
+
     sessions.set(tabInfo.id, session);
 
 }
@@ -59,8 +81,24 @@ function updateSessionContent(tabId, content) {
     if (!session) {
         return;
     }
-
+    console.log("Updating Session:", tabId);
+console.log("Content Length:", content?.length);
     session.content = content || "";
+
+}
+
+/**
+ * Updates metadata.
+ */
+function updateSessionMetadata(tabId, metadata) {
+
+    const session = sessions.get(tabId);
+
+    if (!session) {
+        return;
+    }
+
+    session.metadata = metadata || {};
 
 }
 
@@ -93,6 +131,7 @@ function resumeSession(tabId) {
     session.state = SESSION_STATE.ACTIVE;
 
 }
+
 /**
  * Ends a tab session.
  */
@@ -109,7 +148,10 @@ function endSession(tabId, activeStudyTime) {
     session.completedAt = new Date().toISOString();
 
     sessions.delete(tabId);
-
+    console.log("Ending Session:");
+    console.log("Content:", session.content);
+console.log("Metadata:", session.metadata);
+console.log(session);
     return session.toJSON();
 
 }
@@ -123,7 +165,9 @@ function getSession(tabId) {
 
 }
 
-
+/**
+ * Returns true if paused.
+ */
 function isSessionPaused(tabId) {
 
     const session = sessions.get(tabId);
@@ -131,6 +175,7 @@ function isSessionPaused(tabId) {
     return session?.state === SESSION_STATE.PAUSED;
 
 }
+
 /**
  * Returns all active sessions.
  */
@@ -145,6 +190,8 @@ export {
     startSession,
 
     updateSessionContent,
+
+    updateSessionMetadata,
 
     pauseSession,
 

@@ -59,12 +59,30 @@ function extractTitle() {
  */
 function extractGenericContent() {
 
+    const content = extractVisibleContent();
+
     return {
+
         platform: "Generic",
+
+        sourceType: "Web Page",
+
         title: extractTitle(),
+
         url: window.location.href,
-        content: extractVisibleContent(),
+
+        content,
+
+        metadata: {
+
+            contentLength: content.length,
+
+            language: document.documentElement.lang || "en"
+
+        },
+
         extractedAt: new Date().toISOString()
+
     };
 
 }

@@ -4,6 +4,9 @@ import {
     getElementText
 } from "../utils/textUtils.js";
 
+/**
+ * Extract documentation/tutorial content.
+ */
 function extractDocumentationContent() {
 
     const article =
@@ -12,12 +15,30 @@ function extractDocumentationContent() {
         document.querySelector("[role='main']") ||
         document.body;
 
+    const content = getElementText(article);
+
     return {
+
         platform: "Documentation",
+
+        sourceType: "Documentation",
+
         title: getPageTitle(),
+
         url: getCurrentUrl(),
-        content: getElementText(article),
+
+        content,
+
+        metadata: {
+
+            contentLength: content.length,
+
+            language: document.documentElement.lang || "en"
+
+        },
+
         extractedAt: new Date().toISOString()
+
     };
 
 }

@@ -7,7 +7,8 @@
 
 import {
     getTabInfo,
-    isSupportedWebsite
+    isSupportedWebsite,
+    getPlatform
 } from "./tabManager.js";
 
 import {
@@ -85,6 +86,11 @@ async function handleLearningTab(tab) {
 
     // Existing session
     if (session) {
+
+    // Refresh page information
+    session.url = tabInfo.url;
+    session.title = tabInfo.title;
+    session.platform = getPlatform(tabInfo.url);
 
     if (isSessionPaused(tab.id)) {
 
