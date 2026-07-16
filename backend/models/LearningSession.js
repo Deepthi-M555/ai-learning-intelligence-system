@@ -3,17 +3,16 @@ const mongoose = require("mongoose");
 const learningSessionSchema = new mongoose.Schema(
     {
         user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: false
-    //required: true
-},
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: false
+            // required: true (Enable after authentication)
+        },
 
         sessionId: {
             type: String,
             required: false
-            //required: true
-    
+            // required: true
         },
 
         platform: {
@@ -21,14 +20,49 @@ const learningSessionSchema = new mongoose.Schema(
             required: true
         },
 
-        title: String,
-        url: String,
-        content: String,
-        activeStudyTime: Number,
+        sourceType: {
+            type: String,
+            default: ""
+        },
+
+        title: {
+            type: String,
+            default: ""
+        },
+
+        url: {
+            type: String,
+            default: ""
+        },
+
+        content: {
+            type: String,
+            default: ""
+        },
+
+        metadata: {
+            type: mongoose.Schema.Types.Mixed,
+            default: {}
+        },
+
+        activeStudyTime: {
+            type: Number,
+            default: 0
+        },
+
         startedAt: Date,
+
         completedAt: Date,
-        browser: String,
-        device: String
+
+        browser: {
+            type: String,
+            default: "Chrome"
+        },
+
+        device: {
+            type: String,
+            default: ""
+        }
     },
     {
         timestamps: true
