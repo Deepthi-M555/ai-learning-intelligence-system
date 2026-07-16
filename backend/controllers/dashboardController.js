@@ -4,7 +4,7 @@ const createTrack = async (req, res) => {
     try {
         const track = await dashboardService.createManualTrack(
             req.user.id,
-            req.body.name
+            req.body.trackName
         );
 
         res.status(201).json(track);
