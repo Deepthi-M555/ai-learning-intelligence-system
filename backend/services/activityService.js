@@ -2,30 +2,44 @@ const Activity = require("../models/Activity");
 
 const createActivity = async (userId, activityData) => {
     const {
+        sessionId,
         platform,
-        url,
+        sourceType,
         title,
+        url,
+        content,
+        metadata,
+        activeStudyTime,
         startedAt,
-        endedAt,
+        completedAt,
+        browser,
+        device,
     } = activityData;
 
     // Prevent invalid activity durations
-    if (new Date(endedAt) <= new Date(startedAt)) {
+    if (new Date(completedAt) <= new Date(startedAt)) {
         throw new Error("Invalid activity duration");
     }
 
     const duration = Math.floor(
-        (new Date(endedAt) - new Date(startedAt)) / 1000
+        (new Date(completedAt) - new Date(startedAt)) / 1000
     );
 
     return await Activity.create({
         userId,
+        sessionId,
         platform,
-        url,
+        sourceType,
         title,
+        url,
+        content,
+        metadata,
+        activeStudyTime,
         startedAt,
-        endedAt,
+        completedAt,
         duration,
+        browser,
+        device,
     });
 };
 
