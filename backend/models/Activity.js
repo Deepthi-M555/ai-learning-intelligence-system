@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const activitySchema = new mongoose.Schema(
+const ActivitySchema = new mongoose.Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -9,12 +9,17 @@ const activitySchema = new mongoose.Schema(
             index: true,
         },
 
+        sessionId: {
+            type: String,
+            required: true,
+        },
+
         platform: {
             type: String,
             required: true,
         },
 
-        url: {
+        sourceType: {
             type: String,
             required: true,
         },
@@ -24,12 +29,32 @@ const activitySchema = new mongoose.Schema(
             required: true,
         },
 
+        url: {
+            type: String,
+            required: true,
+        },
+
+        content: {
+            type: String,
+            default: "",
+        },
+
+        metadata: {
+            type: Object,
+            default: {},
+        },
+
+        activeStudyTime: {
+            type: Number,
+            default: 0,
+        },
+
         startedAt: {
             type: Date,
             required: true,
         },
 
-        endedAt: {
+        completedAt: {
             type: Date,
             required: true,
         },
@@ -37,6 +62,16 @@ const activitySchema = new mongoose.Schema(
         duration: {
             type: Number,
             required: true,
+        },
+
+        browser: {
+            type: String,
+            default: "",
+        },
+
+        device: {
+            type: String,
+            default: "",
         },
 
         processed: {
@@ -49,4 +84,4 @@ const activitySchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Activity", activitySchema);
+module.exports = mongoose.model("Activity", ActivitySchema);
