@@ -1,0 +1,50 @@
+services:
+
+  ai-processing-service:
+    build: .
+    container_name: ai-processing-service
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/app
+
+    env_file:
+      - .env
+
+    depends_on:
+      - redis
+
+    restart: unless-stopped
+
+    command: uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+
+  celery-worker:
+    build: .
+    container_name: celery-worker
+
+    volumes:
+      - .:/app
+
+    env_file:
+      - .env
+
+    depends_on:
+      - redis
+
+    restart: unless-stopped
+
+    command: uv run celery -A src.celery_app:celery_app worker --loglevel=info
+
+
+  redis:
+    image: redis:7-alpine
+
+    container_name: redis-server
+
+    ports:
+      - "6379:6379"
+
+    restart: unless-stopped

@@ -1,0 +1,28 @@
+[project]
+name = "processing-ai-service"
+version = "0.1.0"
+description = "AI Processing Service"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "pydantic-settings",
+    "python-dotenv",
+    "langchain",
+    "langchain-core",
+    "langchain-text-splitters",
+    "langgraph",
+    "langchain-groq",
+    "beautifulsoup4",
+    "readability-lxml",
+    "requests",
+    "groq",
+    "python-multipart",
+    "lxml",
+    "lxml-html-clean",
+    "orjson",
+    "redis>=8.0.1",
+    "celery>=5.6.3",
+]
