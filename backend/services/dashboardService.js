@@ -1,5 +1,5 @@
 const Dashboard = require("../models/Dashboard");
-
+const Activity = require("../models/Activity");
 /*
 Create dashboard if it does not exist
 */
@@ -124,29 +124,83 @@ const getTopicTimeline = async (
     userId,
     topicId
 ) => {
-
-    const dashboard = await getOrCreateDashboard(userId);
+    const dashboard =
+        await getOrCreateDashboard(userId);
 
     let targetTopic = null;
+    let targetTrack = null;
 
-    dashboard.tracks.forEach((track) => {
-
+    for (const track of dashboard.tracks) {
         const topic = track.topics.id(topicId);
 
         if (topic) {
             targetTopic = topic;
+            targetTrack = track;
+            break;
         }
-    });
+    }
 
     if (!targetTopic) {
         throw new Error("Topic not found");
     }
 
-    return targetTopic.activities.sort(
-        (a, b) =>
-            new Date(b.linkedAt) -
-            new Date(a.linkedAt)
-    );
+    const activityIds =
+        targetTopic.activities.map(
+            (item) => item.activityId
+        );
+
+    const activities = await Activity.find({
+        _id: {
+            $in: activityIds,
+        },
+        userId,
+    }).sort({
+        startedAt: -1,
+    });
+
+    return {
+        track: {
+            id: targetTrack._id,
+            name: targetTrack.name,
+        },
+
+        topic: {
+            id: targetTopic._id,
+            name: targetTopic.name,
+        },
+
+        activityCount: activities.length,
+
+        activities: activities.map(
+            (activity) => ({
+                id: activity._id,
+
+                title: activity.title,
+
+                url: activity.url,
+
+                platform: activity.platform,
+
+                sourceType:
+                    activity.sourceType,
+
+                duration:
+                    activity.duration,
+
+                activeStudyTime:
+                    activity.activeStudyTime,
+
+                startedAt:
+                    activity.startedAt,
+
+                completedAt:
+                    activity.completedAt,
+
+                classification:
+                    activity.classification,
+            })
+        ),
+    };
 };
 
 /*
@@ -234,21 +288,161 @@ const linkActivityToTopic = async (
     return targetTopic;
 };
 
-module.exports = {
-    getOrCreateDashboard,
 
-    createManualTrack,
+const getOrCreateAITrack = async (
+    userId,
+    trackName
+) => {
+    const dashboard =
+        await getOrCreateDashboard(userId);
 
-    getDashboardTracks,
+    let track = dashboard.tracks.find(
+        (track) =>
+            track.name.toLowerCase() ===
+            trackName.toLowerCase()
+    );
 
-    getTopicsInTrack,
+    if (!track) {
+        dashboard.tracks.push({
+            name: trackName,
+            isManual: false,
+            topics: [],
+        });
 
-    getTopicTimeline,
+        await dashboard.save();
+
+        track =
+            dashboard.tracks[
+                dashboard.tracks.length - 1
+            ];
+    }
+
+    return track;
+};
+
+/*
+AI Classification → Dashboard Integration
+
+classification:
+{
+    track: "Data Structures & Algorithms",
+    topic: "Graph Traversal",
+    ...
+}
+*/
+const integrateClassification = async (
+    userId,
+    activityId,
+    classification
+) => {
+    if (
+        !classification?.track ||
+        !classification?.topic
+    ) {
+        throw new Error(
+            "Classification track and topic are required"
+        );
+    }
+
+    const dashboard =
+        await getOrCreateDashboard(userId);
 
     /*
-    AI only
+    STEP 1:
+    Find AI/manual track with same name.
     */
-    addTopicToTrack,
+    let track = dashboard.tracks.find(
+        (track) =>
+            track.name.toLowerCase() ===
+            classification.track.toLowerCase()
+    );
 
+    /*
+    STEP 2:
+    Create track if it doesn't exist.
+    */
+    if (!track) {
+        dashboard.tracks.push({
+            name: classification.track,
+            isManual: false,
+            topics: [],
+        });
+
+        track =
+            dashboard.tracks[
+                dashboard.tracks.length - 1
+            ];
+    }
+
+    /*
+    STEP 3:
+    Find topic inside track.
+    */
+    let topic = track.topics.find(
+        (topic) =>
+            topic.name.toLowerCase() ===
+            classification.topic.toLowerCase()
+    );
+
+    /*
+    STEP 4:
+    Create topic if needed.
+    */
+    if (!topic) {
+        track.topics.push({
+            name: classification.topic,
+            activities: [],
+            lastActive: new Date(),
+        });
+
+        topic =
+            track.topics[
+                track.topics.length - 1
+            ];
+    }
+
+    /*
+    STEP 5:
+    Prevent duplicate activity linking.
+
+    Important because callbacks/manual sync
+    can potentially run more than once.
+    */
+    const alreadyLinked =
+        topic.activities.some(
+            (item) =>
+                item.activityId.toString() ===
+                activityId.toString()
+        );
+
+    if (!alreadyLinked) {
+        topic.activities.push({
+            activityId,
+            summaryId: null,
+            linkedAt: new Date(),
+        });
+    }
+
+    topic.lastActive = new Date();
+
+    await dashboard.save();
+
+    return {
+        track,
+        topic,
+    };
+};
+
+module.exports = {
+    getOrCreateDashboard,
+    createManualTrack,
+    getDashboardTracks,
+    getTopicsInTrack,
+    getTopicTimeline,
+    integrateClassification,
+
+    // ai only
+    getOrCreateAITrack,
+    addTopicToTrack,
     linkActivityToTopic,
 };

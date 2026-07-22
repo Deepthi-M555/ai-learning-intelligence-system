@@ -39,7 +39,7 @@ router.get(
 Open Topic Timeline
 */
 router.get(
-    "/topics/:topicId/activities",
+    "/topics/:topicId/timeline",
     protect,
     getTopicTimeline
 );

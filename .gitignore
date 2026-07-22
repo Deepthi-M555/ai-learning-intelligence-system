@@ -1,8 +1,9 @@
-.vscode/
-.idea/
-*.log
+.venv/
+__pycache__/
+*.pyc
 
 .env
-node_modules/
+!.env.example
 
-package-lock.json
+dump.rdb
+redis-data/
