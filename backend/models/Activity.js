@@ -78,6 +78,48 @@ const ActivitySchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        classificationStatus: {
+            type: String,
+            enum: [
+                "NOT_STARTED",
+                "PROCESSING",
+                "COMPLETED",
+                "FAILED",
+            ],
+            default: "NOT_STARTED",
+        },
+
+        classificationTaskId: {
+            type: String,
+            default: null,
+        },
+
+        classification: {
+            track: {
+                type: String,
+                default: null,
+            },
+
+            topic: {
+                type: String,
+                default: null,
+            },
+
+            subtopics: {
+                type: [String],
+                default: [],
+            },
+
+            resource_type: {
+                type: String,
+                default: null,
+            },
+
+            problem_difficulty: {
+                type: String,
+                default: null,
+            },
+        },
     },
     {
         timestamps: true,
