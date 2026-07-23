@@ -11,7 +11,7 @@ Your task is to generate a quiz from the supplied summary.
 
 Rules
 
-1. Generate exactly 20 questions.
+1. Generate exactly 10 questions.
 
 2. Difficulty distribution
 

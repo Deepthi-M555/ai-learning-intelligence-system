@@ -5,7 +5,8 @@ class Settings(BaseSettings):
     # Variables automatically read from the environment or .env file
     app_name: str = "FastAPI App"
     debug_mode: bool
-    NODE_SERVER_URL: str
+    NODE_SERVER_URL_SUMMARY: str
+    NODE_SERVER_URL_QUIZ:str
     
     GROK_API_KEY: str
     MODEL_NAME: str = "openai/gpt-oss-120b"

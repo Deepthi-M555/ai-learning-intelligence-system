@@ -2,6 +2,18 @@
 
 This service layer accepts learning-session and quiz-generation requests, checks Redis for cached results, queues background work with Celery, and sends completed summaries and quizzes back to the Node backend.
 
+# to start
+uv run uvicorn main:app --reload --port 5000 --log-level debug (in a different terminal)
+uv run celery -A src.queueData.tasks:app worker -P solo --loglevel=INFO (in a different terminal)
+install docker desktop if not installed
+in the  git bash run
+docker run -d --name my-redis -p 6379:6379 redis:latest
+run the docker container before sending the request
+
+
+
+
+
 ## What This Service Does
 
 - Exposes FastAPI endpoints under `/api`.

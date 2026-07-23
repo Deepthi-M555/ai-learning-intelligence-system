@@ -1,13 +1,37 @@
-from typing import List, Tuple
+from typing import List, Optional
 from pydantic import BaseModel
 
 
+class Classification(BaseModel):
+    track: str
+    topic: str
+    subtopics: List[str]
+
+
+class Summary(BaseModel):
+    keyPoints: List[str]
+    subtopic: Optional[str] = None
+
+
+class Question(BaseModel):
+    question: str
+    options: List[str]
+    correctAnswer: str
+    explanation: str
+
+
 class QuizOutput(BaseModel):
-    question_rows: List[Tuple[str, List[str], int]]
+    questions: List[Question]
 
 
 class Quiz(BaseModel):
-    sessionId: str
+    activityId: str
     url: str
-    summary: List[str]
-    question_rows: List[Tuple[str, List[str], int]] | None = None
+    title: str
+    content: str
+    classification: Classification
+    summary: Summary
+    callbackUrl: str
+
+    # Initially None. Populate this after generating the quiz.
+    quiz: Optional[QuizOutput] = None
